@@ -1,44 +1,18 @@
-import os 
-import sympy as sp
-import scipy.integrate as spi
-from integralTentu import integral_tentu
-from integralParsial import integral_parsial
+import tkinter as tk
+from integral_tak_tentu import integral_parsial_gui
+from integral_tentu import integral_tentu_gui
 
-def clear_screen():
-    #Membersihkan layar terminal
-    os.system('cls' if os.name == 'nt' else 'clear')
+def main_gui():
+    root = tk.Tk()
+    root.title("Kalkulator Integral")
 
-header = "\n===== Kalkulator Integral ====="
+    tk.Label(root, text="Kalkulator Integral", font=("Arial", 16)).pack(pady=10)
 
-def welcomeScreen():
-    #Menampilkan menu utama untuk kalkulator integral
-    clear_screen()
-    print(header)
-    print("1. Menghitung integral parsial")
-    print("2. Menghitung integral tentu")
-    print("3. Keluar")
+    tk.Button(root, text="Integral Tak Tentu", command=integral_parsial_gui, width=20).pack(pady=10)
+    tk.Button(root, text="Integral Tentu", command=integral_tentu_gui, width=20).pack(pady=10)
+    tk.Button(root, text="Keluar", command=root.quit, width=20).pack(pady=10)
 
-def main():
-    #Fungsi utama untuk menjalankan kalkulator integral
-    while True:
-        welcomeScreen()
-        pilihan = input("\nPilih menu (1/2/3): ")
-
-        if pilihan == '1':
-            clear_screen()
-            print(header)
-            integral_parsial()
-        elif pilihan == '2':
-            clear_screen()
-            print(header)
-            integral_tentu.integrate()
-        elif pilihan == '3':
-            clear_screen()
-            print("Terima kasih! Program selesai.")
-            break
-        else:
-            print("Pilihan tidak valid. Silakan pilih antara 1 hingga 3.")
-            input("\nTekan Enter untuk mencoba lagi...")
+    root.mainloop()
 
 if __name__ == "__main__":
-    main()
+    main_gui()
