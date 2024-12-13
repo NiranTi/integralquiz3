@@ -1,9 +1,28 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-from sympy import symbols, integrate, pretty, sqrt, simplify, apart
+from sympy import symbols, integrate, simplify, Rational
 
 # Membuat simbol x untuk integral
 x = symbols('x')
+
+def format_fraction(expr):
+    """
+    Fungsi untuk memformat fraksi menjadi bentuk 1/3 * x^3.
+    Misalnya x**3/3 menjadi 1/3 * x^3
+    """
+    # Jika bentuknya adalah fraksi, kita pisahkan pembilang dan penyebut
+    if isinstance(expr, float) or isinstance(expr, int):
+        return str(expr)
+    
+    # Menyederhanakan fraksi jika ada
+    expr_str = str(expr)
+    
+    if '/' in expr_str:
+        num, denom = expr_str.split('/')
+        # Menggunakan 1/denom * num untuk menghasilkan 1/3 * x^3
+        return f"1/{denom} * {num}"
+    else:
+        return expr_str
 
 def calculate_integral():
     try:
@@ -28,8 +47,7 @@ def calculate_integral():
         simplified_expr = simplify(expr)
 
         steps = []  # Menyimpan langkah-langkah integral
-        steps.append(f"Fungsi awal: {pretty(expr)}")
-        steps.append(f"Fungsi disederhanakan: {pretty(simplified_expr)}")
+        steps.append(f"Fungsi disederhanakan: {simplified_expr}")
 
         # Mengecek apakah integral tak tentu atau tentu
         if lower_limit and upper_limit:
@@ -38,22 +56,21 @@ def calculate_integral():
             indefinite_integral = integrate(simplified_expr, x)
             definite_integral = integrate(simplified_expr, (x, lower_limit, upper_limit))
 
-            steps.append(f"Integral tak tentu: {pretty(indefinite_integral)}")
-            steps.append(f"Evaluasi pada batas-batas: [{lower_limit}, {upper_limit}]")
-            steps.append(f"Hasil integral tentu: {pretty(definite_integral)}")
+            steps.append(f"Hasil integral tentu: {format_fraction(definite_integral)}")
 
-            result_text = f"Hasil Integral Tentu: {definite_integral}\n\nLangkah-langkah:\n" + "\n".join(steps)
+            result_text = f"Hasil Integral Tentu:\n{format_fraction(definite_integral)}\n\nLangkah-langkah:\n" + "\n".join(steps)
         else:
             indefinite_integral = integrate(simplified_expr, x)
-            steps.append(f"Integral tak tentu: {pretty(indefinite_integral)}")
+            steps.append(f"Hasil integral tak tentu: {format_fraction(indefinite_integral)}")
 
-            result_text = f"Hasil Integral Tak Tentu:\n{indefinite_integral}\n\nLangkah-langkah:\n" + "\n".join(steps)
+            result_text = f"Hasil Integral Tak Tentu:\n{format_fraction(indefinite_integral)}\n\nLangkah-langkah:\n" + "\n".join(steps)
 
         # Menampilkan hasil pada text box
         text_output.config(state='normal')
         text_output.delete('1.0', tk.END)
         text_output.insert(tk.END, result_text)
         text_output.config(state='disabled')
+
     except Exception as e:
         messagebox.showerror("Error", f"Terjadi kesalahan: {e}")
 
