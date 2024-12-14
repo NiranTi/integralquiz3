@@ -1,47 +1,29 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-from sympy import symbols, integrate, simplify, Rational
+from sympy import symbols, integrate, simplify, sqrt, sympify
 
 # Membuat simbol x untuk integral
 x = symbols('x')
 
 def format_fraction(expr):
     """
-    Fungsi untuk memformat fraksi menjadi bentuk 1/3 * x^3.
-    Misalnya x**3/3 menjadi 1/3 * x^3
+    Fungsi untuk memformat fraksi menjadi bentuk yang lebih mudah dibaca.
     """
-    # Jika bentuknya adalah fraksi, kita pisahkan pembilang dan penyebut
-    if isinstance(expr, float) or isinstance(expr, int):
-        return str(expr)
-    
-    # Menyederhanakan fraksi jika ada
-    expr_str = str(expr)
-    
-    if '/' in expr_str:
-        num, denom = expr_str.split('/')
-        # Menggunakan 1/denom * num untuk menghasilkan 1/3 * x^3
-        return f"1/{denom} * {num}"
-    else:
-        return expr_str
+    return str(expr)
 
 def calculate_integral():
     try:
         # Mendapatkan input dari pengguna
-        function = entry_function.get()
-        lower_limit = entry_lower.get()
-        upper_limit = entry_upper.get()
+        function = entry_function.get().strip()
+        lower_limit = entry_lower.get().strip()
+        upper_limit = entry_upper.get().strip()
 
-        # Mengganti simbol √ (akar) dengan sqrt untuk SymPy
-        function = function.replace('√', 'sqrt')
+        # Mengganti simbol matematika umum agar sesuai dengan SymPy
+        function = function.replace('√', 'sqrt')  # Ubah √ menjadi sqrt
+        function = function.replace('^', '**')   # Ubah ^ menjadi ** untuk eksponen
 
-        # Mengganti kesalahan umum seperti sqrt3 menjadi sqrt(3)
-        function = function.replace('sqrt3', 'sqrt(3)')
-
-        # Mengganti simbol ^ menjadi ** untuk SymPy
-        function = function.replace('^', '**')
-
-        # Mengubah string menjadi fungsi simbolik
-        expr = eval(function)
+        # Mengubah string menjadi ekspresi simbolik menggunakan sympify
+        expr = sympify(function)
 
         # Menyederhanakan ekspresi
         simplified_expr = simplify(expr)
@@ -51,8 +33,8 @@ def calculate_integral():
 
         # Mengecek apakah integral tak tentu atau tentu
         if lower_limit and upper_limit:
-            lower_limit = eval(lower_limit)
-            upper_limit = eval(upper_limit)
+            lower_limit = float(eval(lower_limit))  # Mengonversi batas bawah ke float
+            upper_limit = float(eval(upper_limit))  # Mengonversi batas atas ke float
             indefinite_integral = integrate(simplified_expr, x)
             definite_integral = integrate(simplified_expr, (x, lower_limit, upper_limit))
 
