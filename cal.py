@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-from sympy import symbols, integrate, pretty, sqrt, simplify, apart
+from sympy import symbols, integrate, pretty, sqrt, simplify, sympify
 
 # Membuat simbol x untuk integral
 x = symbols('x')
@@ -8,21 +8,17 @@ x = symbols('x')
 def calculate_integral():
     try:
         # Mendapatkan input dari pengguna
-        function = entry_function.get()
-        lower_limit = entry_lower.get()
-        upper_limit = entry_upper.get()
+        function = entry_function.get().strip()
+        lower_limit = entry_lower.get().strip()
+        upper_limit = entry_upper.get().strip()
 
-        # Mengganti simbol √ (akar) dengan sqrt untuk SymPy
-        function = function.replace('√', 'sqrt')
+        # Mengganti simbol matematika umum untuk SymPy
+        function = function.replace('√', 'sqrt')  # Ubah √ menjadi sqrt
+        function = function.replace('^', '**')   # Ubah ^ menjadi ** untuk eksponen
+        function = function.replace(' ', '')     # Hapus spasi ekstra
 
-        # Mengganti kesalahan umum seperti sqrt3 menjadi sqrt(3)
-        function = function.replace('sqrt3', 'sqrt(3)')
-
-        # Mengganti simbol ^ menjadi ** untuk SymPy
-        function = function.replace('^', '**')
-
-        # Mengubah string menjadi fungsi simbolik
-        expr = eval(function)
+        # Mengubah string menjadi fungsi simbolik dengan sympify
+        expr = sympify(function)
 
         # Menyederhanakan ekspresi
         simplified_expr = simplify(expr)
@@ -33,8 +29,8 @@ def calculate_integral():
 
         # Mengecek apakah integral tak tentu atau tentu
         if lower_limit and upper_limit:
-            lower_limit = eval(lower_limit)
-            upper_limit = eval(upper_limit)
+            lower_limit = float(eval(lower_limit))  # Mengonversi batas bawah ke float
+            upper_limit = float(eval(upper_limit))  # Mengonversi batas atas ke float
             indefinite_integral = integrate(simplified_expr, x)
             definite_integral = integrate(simplified_expr, (x, lower_limit, upper_limit))
 
