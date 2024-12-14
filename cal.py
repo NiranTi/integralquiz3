@@ -43,9 +43,9 @@ def calculate_integral():
             result_text = f"Hasil Integral Tentu:\n{format_fraction(definite_integral)}\n\nLangkah-langkah:\n" + "\n".join(steps)
         else:
             indefinite_integral = integrate(simplified_expr, x)
-            steps.append(f"Hasil integral tak tentu: {format_fraction(indefinite_integral)}")
+            steps.append(f"Hasil integral tak tentu: {format_fraction(indefinite_integral)} + c")
 
-            result_text = f"Hasil Integral Tak Tentu:\n{format_fraction(indefinite_integral)}\n\nLangkah-langkah:\n" + "\n".join(steps)
+            result_text = f"Hasil Integral Tak Tentu:\n{format_fraction(indefinite_integral)} + c\n\nLangkah-langkah:\n" + "\n".join(steps)
 
         # Menampilkan hasil pada text box
         text_output.config(state='normal')
